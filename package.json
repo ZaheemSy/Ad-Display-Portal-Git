@@ -2,7 +2,7 @@
   "name": "ad-display-portal",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://zaheemsy.github.io/ad-display-portal",
+  "homepage": "https://ZaheemSy.github.io/Ad-Display-Portal-Git",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -21,7 +21,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "main -d build"
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
