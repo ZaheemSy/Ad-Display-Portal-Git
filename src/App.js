@@ -8,6 +8,10 @@ function App() {
   const [totalDuration, setTotalDuration] = useState(0);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
 
   const resizeImage = (file) =>
     new Promise((resolve) => {
@@ -56,6 +60,7 @@ function App() {
   };
 
   const isSubmitDisabled = () => {
+    if (!startDate || !endDate || !startTime || !endTime) return true; // Prevent submission if date/time is missing
     if (divideTime || uploadedFiles.length === 0) return false;
     return uploadedFiles.some((image) => image.duration === 0);
   };
@@ -68,15 +73,12 @@ function App() {
       const payload = {
         imageName: image.file.name,
         imageUrl: image.base64,
-        startDate: '2024-11-20',
-        endDate: '2024-11-25',
-        startTime: '08:00:00',
-        endTime: '18:00:00',
+        startDate,
+        endDate,
+        startTime,
+        endTime,
         duration: divideTime ? calculateDividedDuration() : Number(image.duration),
       };
-
-
-      console.log("data sendingggg", JSON.stringify(payload))
 
       try {
         const response = await fetch('https://ad-display-backend.onrender.com/api/images', {
@@ -108,8 +110,58 @@ function App() {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-      <h1>Ad Display Portalllll</h1>
+      <h1>Ad Display Portal</h1>
 
+      {/* Date and Time Input */}
+      <div style={{ marginBottom: '20px' }}>
+        <h3>Common Start/End Dates and Times</h3>
+        <div style={{ marginBottom: '10px' }}>
+          <label>
+            Start Date: 
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              style={{ marginLeft: '10px' }}
+            />
+          </label>
+        </div>
+        <div style={{ marginBottom: '10px' }}>
+          <label>
+            End Date: 
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              style={{ marginLeft: '10px' }}
+            />
+          </label>
+        </div>
+        <div style={{ marginBottom: '10px' }}>
+          <label>
+            Start Time: 
+            <input
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              style={{ marginLeft: '10px' }}
+            />
+          </label>
+        </div>
+        <div style={{ marginBottom: '10px' }}>
+          <label>
+            End Time: 
+            <input
+              type="time"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              style={{ marginLeft: '10px' }}
+            />
+          </label>
+        </div>
+      </div>
+
+      {/* Upload Section */}
       <ImageUpload onUpload={handleUpload} />
 
       {uploadedFiles.length > 0 && (
@@ -158,14 +210,21 @@ function App() {
         </div>
       )}
 
+      {/* Submit Button */}
       <button
         onClick={handleSubmit}
         disabled={isSubmitDisabled() || loading}
-        style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: 'blue', color: 'white' }}
+        style={{
+          marginTop: '20px',
+          padding: '10px 20px',
+          backgroundColor: isSubmitDisabled() ? 'grey' : 'blue',
+          color: 'white',
+        }}
       >
         {loading ? 'Uploading...' : 'Submit'}
       </button>
 
+      {/* Message */}
       {message && <p style={{ marginTop: '20px', color: 'red' }}>{message}</p>}
     </div>
   );
