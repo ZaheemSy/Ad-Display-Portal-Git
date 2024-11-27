@@ -8,10 +8,17 @@ function App() {
   const [totalDuration, setTotalDuration] = useState(0);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  // const [startDate, setStartDate] = useState('');
+  // const [endDate, setEndDate] = useState('');
+  // const [startTime, setStartTime] = useState('');
+  // const [endTime, setEndTime] = useState('');
+
+
+  const [startDate, setStartDate] = useState('2024-11-25'); // Hard-coded Start Date
+const [endDate, setEndDate] = useState('2024-11-25');   // Hard-coded End Date
+const [startTime, setStartTime] = useState('10:00');    // Hard-coded Start Time (24-hour format)
+const [endTime, setEndTime] = useState('22:00');       // Hard-coded End Time (24-hour format)
+
 
   const resizeImage = (file) =>
     new Promise((resolve) => {
