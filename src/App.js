@@ -85,7 +85,11 @@ const [endTime, setEndTime] = useState('22:00');       // Hard-coded End Time (2
         startTime,
         endTime,
         duration: divideTime ? calculateDividedDuration() : Number(image.duration),
+
+ 
       };
+
+      console.log('payloadpayload::::',JSON.stringify(payload))
 
       try {
         const response = await fetch('https://ad-display-backend.onrender.com/api/images', {
@@ -117,7 +121,7 @@ const [endTime, setEndTime] = useState('22:00');       // Hard-coded End Time (2
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-      <h1>Ad Display Portal</h1>
+      <h1>Ad Display Portal v1</h1>
 
       {/* Date and Time Input */}
       <div style={{ marginBottom: '20px' }}>
