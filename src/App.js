@@ -15,9 +15,9 @@ function App() {
 
 
   const [startDate, setStartDate] = useState('2024-11-25'); // Hard-coded Start Date
-const [endDate, setEndDate] = useState('2024-11-25');   // Hard-coded End Date
-const [startTime, setStartTime] = useState('10:00');    // Hard-coded Start Time (24-hour format)
-const [endTime, setEndTime] = useState('22:00');       // Hard-coded End Time (24-hour format)
+  const [endDate, setEndDate] = useState('2024-11-25');   // Hard-coded End Date
+  const [startTime, setStartTime] = useState('10:00');    // Hard-coded Start Time (24-hour format)
+  const [endTime, setEndTime] = useState('22:00');       // Hard-coded End Time (24-hour format)
 
 
   const resizeImage = (file) =>
@@ -86,10 +86,13 @@ const [endTime, setEndTime] = useState('22:00');       // Hard-coded End Time (2
         endTime,
         duration: divideTime ? calculateDividedDuration() : Number(image.duration),
 
- 
+        deviceToken: "sampleDeviceToken",
+        userId: 1
+
+
       };
 
-      console.log('payloadpayload::::',JSON.stringify(payload))
+      console.log('payloadpayload::::', JSON.stringify(payload))
 
       try {
         const response = await fetch('https://ad-display-backend.onrender.com/api/images', {
@@ -128,7 +131,7 @@ const [endTime, setEndTime] = useState('22:00');       // Hard-coded End Time (2
         <h3>Common Start/End Dates and Times</h3>
         <div style={{ marginBottom: '10px' }}>
           <label>
-            Start Date: 
+            Start Date:
             <input
               type="date"
               value={startDate}
@@ -139,7 +142,7 @@ const [endTime, setEndTime] = useState('22:00');       // Hard-coded End Time (2
         </div>
         <div style={{ marginBottom: '10px' }}>
           <label>
-            End Date: 
+            End Date:
             <input
               type="date"
               value={endDate}
@@ -150,7 +153,7 @@ const [endTime, setEndTime] = useState('22:00');       // Hard-coded End Time (2
         </div>
         <div style={{ marginBottom: '10px' }}>
           <label>
-            Start Time: 
+            Start Time:
             <input
               type="time"
               value={startTime}
@@ -161,7 +164,7 @@ const [endTime, setEndTime] = useState('22:00');       // Hard-coded End Time (2
         </div>
         <div style={{ marginBottom: '10px' }}>
           <label>
-            End Time: 
+            End Time:
             <input
               type="time"
               value={endTime}
