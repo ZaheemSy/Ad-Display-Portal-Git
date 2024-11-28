@@ -84,9 +84,8 @@ function App() {
         endDate,
         startTime,
         endTime,
-        duration: divideTime ? calculateDividedDuration() : Number(image.duration),
-
-        deviceToken: "sampleDeviceToken",
+        duration: divideTime ? calculateDividedDuration() : Number(image.duration), 
+        //deviceToken: "sampleDeviceToken",
         userId: 1
 
 
