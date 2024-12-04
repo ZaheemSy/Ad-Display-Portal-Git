@@ -136,7 +136,7 @@ function App() {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-      <h1>Ad Display Portal v22z</h1>
+      <h1>Ad Display Portal v3</h1>
 
       {/* Date and Time Input */}
       <div style={{ marginBottom: '20px' }}>
