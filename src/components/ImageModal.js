@@ -1,14 +1,12 @@
-import React from 'react';
-
 const ImageModal = ({ images, onClose, onDelete }) => {
     return (
         <div className="modal" style={modalStyles}>
             <h2>Manage Images</h2>
-            {images.length === 0 ? (
+            {Array.isArray(images) && images.length === 0 ? (
                 <p>No images uploaded.</p>
             ) : (
                 <div>
-                    {images.map((image, index) => (
+                    {Array.isArray(images) && images.map((image, index) => (
                         <div key={index} style={imageContainerStyles}>
                             <img src={image.imageUrl} alt={image.imageName} style={imageStyles} />
                             <span style={imageNameStyles}>{image.imageName}</span>

@@ -17,13 +17,26 @@ function App() {
   const [fetchedImages, setFetchedImages] = useState([]); // State for fetched images
 
   // Fetch images from the backend
-  useEffect(() => {
-    const fetchImages = async () => {
-        const response = await fetch('https://ad-display-backend.onrender.com/api/images');
-        const data = await response.json();
-        setFetchedImages(data);
-    };
-    fetchImages();
+useEffect(() => {
+  const fetchImages = async () => {
+      try {
+          const response = await fetch('https://ad-display-backend.onrender.com/api/images');
+          const result = await response.json();
+          console.log('Fetched images:', result); // Log the fetched images
+
+          // Check if the fetch was successful and if data is an array
+          if (result.success && Array.isArray(result.data)) {
+              setFetchedImages(result.data); // Update state with fetched images
+          } else {
+              console.error('Fetched data is not an array:', result.data);
+              setFetchedImages([]); // Set to empty array if not valid
+          }
+      } catch (error) {
+          console.error('Error fetching images:', error);
+          setMessage('An error occurred while fetching images.');
+      }
+  };
+  fetchImages();
 }, []);
 
 const handleDeleteImage = async (index) => {
@@ -170,7 +183,7 @@ const handleDeleteImage = async (index) => {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-      <h1>Ad Display Portal v31</h1>
+      <h1>Ad Display Portal v32</h1>
 
       {/* Date and Time Input */}
       <div style={{ marginBottom: '20px' }}>
