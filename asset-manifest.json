@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/Ad-Display-Portal-Git/static/css/main.e6c13ad2.css",
-    "main.js": "/Ad-Display-Portal-Git/static/js/main.1390ad0a.js",
+    "main.js": "/Ad-Display-Portal-Git/static/js/main.b265e0ec.js",
     "index.html": "/Ad-Display-Portal-Git/index.html",
     "main.e6c13ad2.css.map": "/Ad-Display-Portal-Git/static/css/main.e6c13ad2.css.map",
-    "main.1390ad0a.js.map": "/Ad-Display-Portal-Git/static/js/main.1390ad0a.js.map"
+    "main.b265e0ec.js.map": "/Ad-Display-Portal-Git/static/js/main.b265e0ec.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.1390ad0a.js"
+    "static/js/main.b265e0ec.js"
   ]
 }
