@@ -118,6 +118,7 @@ function App() {
       // Check if the fetch was successful
       if (result.success) {
         setFetchedImages(result.data); // Update state with fetched images
+        console.log('result.dataresult.data', result.data)
       } else {
         setMessage(result.message || 'Failed to fetch images.');
       }
@@ -246,8 +247,7 @@ function App() {
         Manage
       </button>
 
-      {/* Submit Button */}
-      ```javascript
+      {/* Submit Button */} 
       <button
         onClick={handleSubmit}
         disabled={isSubmitDisabled() || loading}
