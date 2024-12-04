@@ -126,7 +126,7 @@ function App() {
       setMessage('An error occurred while fetching images.');
     }
   };
-  
+
   const handleDeleteImage = (index) => {
     const updatedFiles = [...fetchedImages];
     updatedFiles.splice(index, 1);
@@ -135,7 +135,7 @@ function App() {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-      <h1>Ad Display Portal v2</h1>
+      <h1>Ad Display Portal v22</h1>
 
       {/* Date and Time Input */}
       <div style={{ marginBottom: '20px' }}>
