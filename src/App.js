@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import ImageUpload from './components/ImageUpload';
 import Resizer from 'react-image-file-resizer';
 import ImageModal from './components/ImageModal';
@@ -16,6 +16,44 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fetchedImages, setFetchedImages] = useState([]); // State for fetched images
 
+  // Fetch images from the backend
+  useEffect(() => {
+    const fetchImages = async () => {
+        const response = await fetch('https://ad-display-backend.onrender.com/api/images');
+        const data = await response.json();
+        setFetchedImages(data);
+    };
+    fetchImages();
+}, []);
+
+const handleDeleteImage = async (index) => {
+    const imageToDelete = fetchedImages[index];
+
+    try {
+        const response = await fetch(`https://ad-display-backend.onrender.com/api/images/${imageToDelete.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            // If the delete was successful, update the state
+            const updatedFiles = [...fetchedImages];
+            updatedFiles.splice(index, 1);
+            setFetchedImages(updatedFiles);
+            setMessage(`Image ${imageToDelete.imageName} deleted successfully!`);
+        } else {
+            const errorData = await response.json();
+            setMessage(errorData.error || `Failed to delete ${imageToDelete.imageName}.`);
+        }
+    } catch (error) {
+        console.error('Error deleting image:', error);
+        setMessage('An error occurred while deleting the image.');
+    }
+};
+
+ 
   const resizeImage = (file) =>
     new Promise((resolve) => {
       Resizer.imageFileResizer(
@@ -128,15 +166,11 @@ function App() {
     }
   };
 
-  const handleDeleteImage = (index) => {
-    const updatedFiles = [...fetchedImages];
-    updatedFiles.splice(index, 1);
-    setFetchedImages(updatedFiles);
-  };
+ 
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-      <h1>Ad Display Portal v3</h1>
+      <h1>Ad Display Portal v31</h1>
 
       {/* Date and Time Input */}
       <div style={{ marginBottom: '20px' }}>
@@ -237,15 +271,18 @@ function App() {
       )}
 
       {/* Manage Button */}
-      <button
-        onClick={() => {
-          handleFetchImages(); // Fetch images when opening the modal
-          setIsModalOpen(true);
-        }}
-        style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: 'green', color: 'white' }}
-      >
-        Manage
-      </button>
+      <div>
+            <h1>Image Gallery</h1>
+            <button onClick={() => setIsModalOpen(true)}>Manage Images</button>
+            {isModalOpen && (
+                <ImageModal
+                    images={fetchedImages}
+                    onClose={() => setIsModalOpen(false)}
+                    onDelete={handleDeleteImage} // Pass the delete handler
+                />
+            )}
+            {message && <p>{message}</p>}
+        </div>
 
       {/* Submit Button */} 
       <button

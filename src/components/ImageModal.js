@@ -1,43 +1,6 @@
 import React from 'react';
 
 const ImageModal = ({ images, onClose, onDelete }) => {
-
-
-
-
-
-    const handleDeleteImage = async (index) => {
-        const imageToDelete = fetchedImages[index];
-
-        try {
-            const response = await fetch(`https://ad-display-backend.onrender.com/api/images/${imageToDelete.id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (response.ok) {
-                // If the delete was successful, update the state
-                const updatedFiles = [...fetchedImages];
-                updatedFiles.splice(index, 1);
-                setFetchedImages(updatedFiles);
-                setMessage(`Image ${imageToDelete.imageName} deleted successfully!`);
-            } else {
-                const errorData = await response.json();
-                setMessage(errorData.error || `Failed to delete ${imageToDelete.imageName}.`);
-            }
-        } catch (error) {
-            console.error('Error deleting image:', error);
-            setMessage('An error occurred while deleting the image.');
-        }
-    };
-
-
-
-
-
-
     return (
         <div className="modal" style={modalStyles}>
             <h2>Manage Images</h2>
