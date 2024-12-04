@@ -80,7 +80,7 @@ function ManageImages() {
 
   return (
     <div className="manage-images"> {/* Apply the CSS class here */}
-      <h1>Manage Cloudinary Images</h1>
+      <h1>Manage Images</h1>
       {loading ? (
         <p>Loading images...</p>
       ) : cloudinaryImages.length > 0 ? (

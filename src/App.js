@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ImageUpload from './components/ImageUpload';
 import Resizer from 'react-image-file-resizer';
+import ImageModal from './components/ImageModal'; // Import the modal component
 
 function App() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -8,29 +9,23 @@ function App() {
   const [totalDuration, setTotalDuration] = useState(0);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  // const [startDate, setStartDate] = useState('');
-  // const [endDate, setEndDate] = useState('');
-  // const [startTime, setStartTime] = useState('');
-  // const [endTime, setEndTime] = useState('');
-
-
-  const [startDate, setStartDate] = useState('2024-11-25'); // Hard-coded Start Date
-  const [endDate, setEndDate] = useState('2024-11-25');   // Hard-coded End Date
-  const [startTime, setStartTime] = useState('10:00');    // Hard-coded Start Time (24-hour format)
-  const [endTime, setEndTime] = useState('22:00');       // Hard-coded End Time (24-hour format)
-
+  const [startDate, setStartDate] = useState('2024-11-25');
+  const [endDate, setEndDate] = useState('2024-11-25');
+  const [startTime, setStartTime] = useState('10:00');
+  const [endTime, setEndTime] = useState('22:00');
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
 
   const resizeImage = (file) =>
     new Promise((resolve) => {
       Resizer.imageFileResizer(
         file,
-        800, // Max width
-        800, // Max height
-        'JPEG', // Output format
-        90, // Quality (0-100)
-        0, // Rotation
+        800,
+        800,
+        'JPEG',
+        90,
+        0,
         (uri) => resolve(uri),
-        'base64' // Output type
+        'base64'
       );
     });
 
@@ -53,7 +48,7 @@ function App() {
     setUploadedFiles(updatedFiles);
   };
 
-  const handleDurationChange = (index, value) => {
+ const handleDurationChange = (index, value) => {
     const updatedFiles = [...uploadedFiles];
     updatedFiles[index].duration = value;
     setUploadedFiles(updatedFiles);
@@ -67,7 +62,7 @@ function App() {
   };
 
   const isSubmitDisabled = () => {
-    if (!startDate || !endDate || !startTime || !endTime) return true; // Prevent submission if date/time is missing
+    if (!startDate || !endDate || !startTime || !endTime) return true;
     if (divideTime || uploadedFiles.length === 0) return false;
     return uploadedFiles.some((image) => image.duration === 0);
   };
@@ -84,14 +79,9 @@ function App() {
         endDate,
         startTime,
         endTime,
-        duration: divideTime ? calculateDividedDuration() : Number(image.duration), 
-        //deviceToken: "sampleDeviceToken",
-        userId: 1
-
-
+        duration: divideTime ? calculateDividedDuration() : Number(image.duration),
+        userId: 1,
       };
-
-      console.log('payloadpayload::::', JSON.stringify(payload))
 
       try {
         const response = await fetch('https://ad-display-backend.onrender.com/api/images', {
@@ -104,21 +94,24 @@ function App() {
 
         if (response.ok) {
           const result = await response.json();
-          console.log(`Image ${image.file.name} uploaded successfully:`, result);
           setMessage(`Image ${image.file.name} uploaded successfully!`);
         } else {
           const errorData = await response.json();
-          console.error(`Error uploading ${image.file.name}:`, errorData.error);
           setMessage(errorData.error || `Failed to upload ${image.file.name}.`);
         }
       } catch (err) {
-        console.error(`Error uploading ${image.file.name}:`, err);
         setMessage(`An error occurred while uploading ${image.file.name}.`);
       }
     }
 
     setLoading(false);
-    setUploadedFiles([]); // Clear uploaded files after submission
+    setUploadedFiles([]);
+  };
+
+  const handleDeleteImage = (index) => {
+    const updatedFiles = [...uploadedFiles];
+    updatedFiles.splice(index, 1);
+    setUploadedFiles(updatedFiles);
   };
 
   return (
@@ -205,7 +198,7 @@ function App() {
       {uploadedFiles.length > 0 && (
         <div style={{ marginTop: '20px' }}>
           <h3>Uploaded Images</h3>
-          {uploadedFiles.map((image, index) => (
+ {uploadedFiles.map((image, index) => (
             <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
               <img src={image.base64} alt={image.file.name} style={{ width: '60px', height: '60px' }} />
               <input
@@ -223,6 +216,11 @@ function App() {
         </div>
       )}
 
+      {/* Manage Button */}
+      <button onClick={() => setIsModalOpen(true)} style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: 'green', color: 'white' }}>
+        Manage
+      </button>
+
       {/* Submit Button */}
       <button
         onClick={handleSubmit}
@@ -239,6 +237,15 @@ function App() {
 
       {/* Message */}
       {message && <p style={{ marginTop: '20px', color: 'red' }}>{message}</p>}
+
+      {/* Modal for Managing Images */}
+      {isModalOpen && (
+        <ImageModal
+          images={uploadedFiles}
+          onClose={() => setIsModalOpen(false)}
+          onDelete={handleDeleteImage}
+        />
+      )}
     </div>
   );
 }
