@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ImageUpload from './components/ImageUpload';
 import Resizer from 'react-image-file-resizer';
 import ImageModal from './components/ImageModal';
@@ -112,17 +112,21 @@ function App() {
   const handleFetchImages = async () => {
     try {
       const response = await fetch('https://ad-display-backend.onrender.com/api/images');
-      const result = await response .json();
+      const result = await response.json();
+      console.log('Fetched images:', result); // Log the fetched images
+  
+      // Check if the fetch was successful
       if (result.success) {
         setFetchedImages(result.data); // Update state with fetched images
       } else {
         setMessage(result.message || 'Failed to fetch images.');
       }
     } catch (error) {
+      console.error('Error fetching images:', error); // Log the error for debugging
       setMessage('An error occurred while fetching images.');
     }
   };
-
+  
   const handleDeleteImage = (index) => {
     const updatedFiles = [...fetchedImages];
     updatedFiles.splice(index, 1);
@@ -131,7 +135,7 @@ function App() {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-      <h1>Ad Display Portal v3</h1>
+      <h1>Ad Display Portal v2</h1>
 
       {/* Date and Time Input */}
       <div style={{ marginBottom: '20px' }}>
@@ -256,7 +260,7 @@ function App() {
         {loading ? 'Uploading...' : 'Submit'}
       </button>
 
- {/* Message */}
+      {/* {/* Message */}
       {message && <p style={{ marginTop: '20px', color: 'red' }}>{message}</p>}
 
       {/* Modal for Managing Images */}
