@@ -106,7 +106,7 @@ function App() {
     }
 
     setLoading(false);
-    setUploadedFiles([]);
+    setUploadedFiles ([]);
   };
 
   const handleFetchImages = async () => {
@@ -135,7 +135,7 @@ function App() {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-      <h1>Ad Display Portal v22</h1>
+      <h1>Ad Display Portal v22z</h1>
 
       {/* Date and Time Input */}
       <div style={{ marginBottom: '20px' }}>
@@ -247,6 +247,7 @@ function App() {
       </button>
 
       {/* Submit Button */}
+      ```javascript
       <button
         onClick={handleSubmit}
         disabled={isSubmitDisabled() || loading}
@@ -260,7 +261,7 @@ function App() {
         {loading ? 'Uploading...' : 'Submit'}
       </button>
 
-      {/* {/* Message */}
+      {/* Message */}
       {message && <p style={{ marginTop: '20px', color: 'red' }}>{message}</p>}
 
       {/* Modal for Managing Images */}
@@ -268,7 +269,7 @@ function App() {
         <ImageModal
           images={fetchedImages} // Pass fetched images to the modal
           onClose={() => setIsModalOpen(false)}
-          onDelete={handleDeleteImage}
+          onDelete={handleDeleteImage} // Corrected line
         />
       )}
     </div>
