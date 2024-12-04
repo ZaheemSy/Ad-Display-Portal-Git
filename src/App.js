@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ImageUpload from './components/ImageUpload';
 import Resizer from 'react-image-file-resizer';
-import ImageModal from './components/ImageModal'; // Import the modal component
+import ImageModal from './components/ImageModal';
 
 function App() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -13,7 +13,8 @@ function App() {
   const [endDate, setEndDate] = useState('2024-11-25');
   const [startTime, setStartTime] = useState('10:00');
   const [endTime, setEndTime] = useState('22:00');
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fetchedImages, setFetchedImages] = useState([]); // State for fetched images
 
   const resizeImage = (file) =>
     new Promise((resolve) => {
@@ -48,7 +49,7 @@ function App() {
     setUploadedFiles(updatedFiles);
   };
 
- const handleDurationChange = (index, value) => {
+  const handleDurationChange = (index, value) => {
     const updatedFiles = [...uploadedFiles];
     updatedFiles[index].duration = value;
     setUploadedFiles(updatedFiles);
@@ -108,10 +109,24 @@ function App() {
     setUploadedFiles([]);
   };
 
+  const handleFetchImages = async () => {
+    try {
+      const response = await fetch('https://ad-display-backend.onrender.com/api/images');
+      const result = await response .json();
+      if (result.success) {
+        setFetchedImages(result.data); // Update state with fetched images
+      } else {
+        setMessage(result.message || 'Failed to fetch images.');
+      }
+    } catch (error) {
+      setMessage('An error occurred while fetching images.');
+    }
+  };
+
   const handleDeleteImage = (index) => {
-    const updatedFiles = [...uploadedFiles];
+    const updatedFiles = [...fetchedImages];
     updatedFiles.splice(index, 1);
-    setUploadedFiles(updatedFiles);
+    setFetchedImages(updatedFiles);
   };
 
   return (
@@ -198,7 +213,7 @@ function App() {
       {uploadedFiles.length > 0 && (
         <div style={{ marginTop: '20px' }}>
           <h3>Uploaded Images</h3>
- {uploadedFiles.map((image, index) => (
+          {uploadedFiles.map((image, index) => (
             <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
               <img src={image.base64} alt={image.file.name} style={{ width: '60px', height: '60px' }} />
               <input
@@ -217,7 +232,13 @@ function App() {
       )}
 
       {/* Manage Button */}
-      <button onClick={() => setIsModalOpen(true)} style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: 'green', color: 'white' }}>
+      <button
+        onClick={() => {
+          handleFetchImages(); // Fetch images when opening the modal
+          setIsModalOpen(true);
+        }}
+        style={{ marginTop: '20px', padding: '10px 20px', backgroundColor: 'green', color: 'white' }}
+      >
         Manage
       </button>
 
@@ -235,13 +256,13 @@ function App() {
         {loading ? 'Uploading...' : 'Submit'}
       </button>
 
-      {/* Message */}
+ {/* Message */}
       {message && <p style={{ marginTop: '20px', color: 'red' }}>{message}</p>}
 
       {/* Modal for Managing Images */}
       {isModalOpen && (
         <ImageModal
-          images={uploadedFiles}
+          images={fetchedImages} // Pass fetched images to the modal
           onClose={() => setIsModalOpen(false)}
           onDelete={handleDeleteImage}
         />
