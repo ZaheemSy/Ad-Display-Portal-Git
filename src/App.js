@@ -4,6 +4,7 @@ import Resizer from 'react-image-file-resizer';
 import ImageModal from './components/ImageModal';
 
 function App() {
+  // State variables
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [divideTime, setDivideTime] = useState(false);
   const [totalDuration, setTotalDuration] = useState(0);
@@ -16,74 +17,76 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fetchedImages, setFetchedImages] = useState([]); // State for fetched images
 
-  // Fetch images from the backend
-useEffect(() => {
-  const fetchImages = async () => {
-      try {
-          const response = await fetch('https://ad-display-backend.onrender.com/api/images');
-          const result = await response.json();
-          console.log('Fetched images:', result); // Log the fetched images
+  // Fetch images from the backend on component mount
+  useEffect(() => {
+    const fetchImages = async () => {
+        try {
+            const response = await fetch('https://ad-display-backend.onrender.com/api/images');
+            const result = await response.json();
+            console.log('Fetched images:', result); // Log the fetched images
 
-          // Check if the fetch was successful and if data is an array
-          if (result.success && Array.isArray(result.data)) {
-              setFetchedImages(result.data); // Update state with fetched images
+            // Check if the fetch was successful and if data is an array
+            if (result.success && Array.isArray(result.data)) {
+                setFetchedImages(result.data); // Update state with fetched images
+            } else {
+                console.error('Fetched data is not an array:', result.data);
+                setFetchedImages([]); // Set to empty array if not valid
+            }
+        } catch (error) {
+            console.error('Error fetching images:', error);
+            setMessage('An error occurred while fetching images.');
+        }
+    };
+    fetchImages();
+  }, []); // Empty dependency array to fetch images only once on mount
+
+  // Handle image deletion from the gallery
+  const handleDeleteImage = async (index) => {
+      const imageToDelete = fetchedImages[index];
+
+      try {
+          const response = await fetch(`https://ad-display-backend.onrender.com/api/images/${imageToDelete.id}`, {
+              method: 'DELETE',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+          });
+
+          if (response.ok) {
+              // If the delete was successful, update the state
+              const updatedFiles = [...fetchedImages];
+              updatedFiles.splice(index, 1);
+              setFetchedImages(updatedFiles);
+              setMessage(`Image ${imageToDelete.imageName} deleted successfully!`);
           } else {
-              console.error('Fetched data is not an array:', result.data);
-              setFetchedImages([]); // Set to empty array if not valid
+              const errorData = await response.json();
+              setMessage(errorData.error || `Failed to delete ${imageToDelete.imageName}.`);
           }
       } catch (error) {
-          console.error('Error fetching images:', error);
-          setMessage('An error occurred while fetching images.');
+          console.error('Error deleting image:', error);
+          setMessage('An error occurred while deleting the image.');
       }
   };
-  fetchImages();
-}, []);
 
-const handleDeleteImage = async (index) => {
-    const imageToDelete = fetchedImages[index];
-
-    try {
-        const response = await fetch(`https://ad-display-backend.onrender.com/api/images/${imageToDelete.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (response.ok) {
-            // If the delete was successful, update the state
-            const updatedFiles = [...fetchedImages];
-            updatedFiles.splice(index, 1);
-            setFetchedImages(updatedFiles);
-            setMessage(`Image ${imageToDelete.imageName} deleted successfully!`);
-        } else {
-            const errorData = await response.json();
-            setMessage(errorData.error || `Failed to delete ${imageToDelete.imageName}.`);
-        }
-    } catch (error) {
-        console.error('Error deleting image:', error);
-        setMessage('An error occurred while deleting the image.');
-    }
-};
-
- 
+  // Resize the uploaded image before uploading
   const resizeImage = (file) =>
     new Promise((resolve) => {
       Resizer.imageFileResizer(
         file,
-        800,
-        800,
-        'JPEG',
-        90,
-        0,
-        (uri) => resolve(uri),
-        'base64'
+        800, // Max width
+        800, // Max height
+        'JPEG', // Format
+        90, // Quality
+        0, // Rotation (0 for no rotation)
+        (uri) => resolve(uri), // Resolve with resized image
+        'base64' // Return as base64 string
       );
     });
 
+  // Handle image upload and resize images before setting them
   const handleUpload = async (files) => {
     const resizedImages = await Promise.all(
-      Array.from(files).map((file) => resizeImage(file))
+      Array.from(files).map((file) => resizeImage(file)) // Resize each file
     );
     setUploadedFiles(
       resizedImages.map((base64, index) => ({
@@ -94,31 +97,36 @@ const handleDeleteImage = async (index) => {
     );
   };
 
+  // Remove an uploaded image from the list
   const handleRemoveImage = (index) => {
     const updatedFiles = [...uploadedFiles];
-    updatedFiles.splice(index, 1);
+    updatedFiles.splice(index, 1); // Remove image by index
     setUploadedFiles(updatedFiles);
   };
 
+  // Handle duration change for a specific image
   const handleDurationChange = (index, value) => {
     const updatedFiles = [...uploadedFiles];
-    updatedFiles[index].duration = value;
+    updatedFiles[index].duration = value; // Update the duration
     setUploadedFiles(updatedFiles);
   };
 
+  // Calculate the divided duration when the checkbox is checked
   const calculateDividedDuration = () => {
     if (uploadedFiles.length > 0 && totalDuration > 0) {
-      return Math.floor((totalDuration * 60) / uploadedFiles.length);
+      return Math.floor((totalDuration * 60) / uploadedFiles.length); // Divide duration equally
     }
     return 0;
   };
 
+  // Check if the submit button should be disabled
   const isSubmitDisabled = () => {
-    if (!startDate || !endDate || !startTime || !endTime) return true;
-    if (divideTime || uploadedFiles.length === 0) return false;
-    return uploadedFiles.some((image) => image.duration === 0);
+    if (!startDate || !endDate || !startTime || !endTime) return true; // Disable if required fields are missing
+    if (divideTime || uploadedFiles.length === 0) return false; // Allow submit if dividing time or files are present
+    return uploadedFiles.some((image) => image.duration === 0); // Disable if any image has no duration set
   };
 
+  // Handle form submission to upload images to the backend
   const handleSubmit = async () => {
     setLoading(true);
     setMessage('');
@@ -131,8 +139,9 @@ const handleDeleteImage = async (index) => {
         endDate,
         startTime,
         endTime,
-        duration: divideTime ? calculateDividedDuration() : Number(image.duration),
+        duration: divideTime ? calculateDividedDuration() : Number(image.duration), // Use divided or custom duration
         userId: 1,
+        isDBUpdated: 'y', // Mark as needing sync
       };
 
       try {
@@ -157,9 +166,10 @@ const handleDeleteImage = async (index) => {
     }
 
     setLoading(false);
-    setUploadedFiles ([]);
+    setUploadedFiles([]); // Clear uploaded images
   };
 
+  // Fetch images from the backend (used in multiple places)
   const handleFetchImages = async () => {
     try {
       const response = await fetch('https://ad-display-backend.onrender.com/api/images');
@@ -169,7 +179,6 @@ const handleDeleteImage = async (index) => {
       // Check if the fetch was successful
       if (result.success) {
         setFetchedImages(result.data); // Update state with fetched images
-        console.log('result.dataresult.data', result.data)
       } else {
         setMessage(result.message || 'Failed to fetch images.');
       }
@@ -179,8 +188,6 @@ const handleDeleteImage = async (index) => {
     }
   };
 
- 
-
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial' }}>
       <h1>Ad Display Portal v32</h1>
@@ -188,6 +195,7 @@ const handleDeleteImage = async (index) => {
       {/* Date and Time Input */}
       <div style={{ marginBottom: '20px' }}>
         <h3>Common Start/End Dates and Times</h3>
+        {/* Start Date */}
         <div style={{ marginBottom: '10px' }}>
           <label>
             Start Date:
@@ -199,6 +207,7 @@ const handleDeleteImage = async (index) => {
             />
           </label>
         </div>
+        {/* End Date */}
         <div style={{ marginBottom: '10px' }}>
           <label>
             End Date:
@@ -210,6 +219,7 @@ const handleDeleteImage = async (index) => {
             />
           </label>
         </div>
+        {/* Start Time */}
         <div style={{ marginBottom: '10px' }}>
           <label>
             Start Time:
@@ -221,6 +231,7 @@ const handleDeleteImage = async (index) => {
             />
           </label>
         </div>
+        {/* End Time */}
         <div style={{ marginBottom: '10px' }}>
           <label>
             End Time:
