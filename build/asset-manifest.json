@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Ad-Display-Portal-Git/static/css/main.e6c13ad2.css",
+    "main.js": "/Ad-Display-Portal-Git/static/js/main.8cc95fdc.js",
+    "index.html": "/Ad-Display-Portal-Git/index.html",
+    "main.e6c13ad2.css.map": "/Ad-Display-Portal-Git/static/css/main.e6c13ad2.css.map",
+    "main.8cc95fdc.js.map": "/Ad-Display-Portal-Git/static/js/main.8cc95fdc.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.8cc95fdc.js"
+  ]
+}
