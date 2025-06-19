@@ -230,7 +230,7 @@ function App() {
         maxWidth: 900, margin: '48px auto 0', background: '#fff',
         borderRadius: 16, boxShadow: '0 2px 10px #0001', padding: 24
       }}>
-        <h3 style={{fontWeight: 700, fontSize: 22, marginBottom: 14}}>All Ads</h3>
+        <h3 style={{fontWeight: 700, fontSize: 22, marginBottom: 14}}>All Ads to show</h3>
         {adsLoading ? (
           <div>Loading...</div>
         ) : ads.length === 0 ? (
