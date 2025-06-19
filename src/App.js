@@ -3,6 +3,7 @@ import ImageUpload from './components/ImageUpload';
 import Resizer from 'react-image-file-resizer';
 import ImageModal from './components/ImageModal';
 
+import { useNavigate } from "react-router-dom";
 const TrashIcon = ({ size = 20, color = "#e74c3c" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <path d="M3 6h18" stroke={color} strokeWidth="2" strokeLinecap="round"/>
@@ -11,6 +12,7 @@ const TrashIcon = ({ size = 20, color = "#e74c3c" }) => (
 );
 
 function App() {
+  const navigate = useNavigate();
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [ads, setAds] = useState([]);
   const [adsLoading, setAdsLoading] = useState(false);
@@ -142,7 +144,10 @@ function App() {
         background: 'white', maxWidth: 700, margin: 'auto',
         borderRadius: 16, boxShadow: '0 4px 24px #0001', padding: 32
       }}>
-        <h2 style={{fontWeight: 800, fontSize: 28, letterSpacing: 1}}>Ad Display Portal</h2>
+          <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+            <h2 style={{fontWeight: 800, fontSize: 28, letterSpacing: 1}}>Ad Display Portal</h2>
+            <button type="button" onClick={() => navigate("/movement-logs")} style={{background:"#fff", color:"#006cff", border:"1px solid #006cff", padding:"6px 12px", borderRadius:6, fontWeight:600, cursor:"pointer"}}>App Logs</button>
+          </div>
         <form onSubmit={handleSubmit}>
           <div style={{marginBottom: 16}}>
             <label style={{fontWeight: 600}}>Ad Title *</label>
